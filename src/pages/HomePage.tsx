@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Alert } from '@mui/material';
+import { Alert, Box } from '@mui/material';
 import FableForm from '../components/FableForm';
 import FableResult from '../components/FableResult';
 
@@ -20,11 +20,17 @@ const HomePage: React.FC = () => {
 
   return (
     <div>
-      {error && <Alert severity="error" onClose={() => setError('')}>{error}</Alert>}
-      <FableForm
-        onFableGenerated={handleFableGenerated}
-        onError={handleError}
-      />
+      {error && (
+        <Box mb={3}>
+          <Alert severity="error" onClose={() => setError('')}>{error}</Alert>
+        </Box>
+      )}
+      <Box mb={4}>
+        <FableForm
+          onFableGenerated={handleFableGenerated}
+          onError={handleError}
+        />
+      </Box>
       <FableResult fableText={fableText} images={images} />
     </div>
   );

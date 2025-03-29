@@ -3,7 +3,7 @@ import {
   Card, 
   CardMedia, 
   CardContent, 
-  Grid as Grid2, 
+  Grid, 
   Paper, 
   Box,
   Divider 
@@ -27,28 +27,29 @@ const FableResult: React.FC<FableResultProps> = ({ fableText, images }) => {
         border: '1px solid rgba(0, 0, 0, 0.08)'
       }}
     >
-      <Box sx={{ textAlign: 'center', mb: 2 }}>
-        <Typography variant="h5" component="h2" color="primary">
+      <Box sx={{ textAlign: 'center', mb: 4 }}>
+        <Typography variant="h4" component="h2" color="primary" sx={{ fontWeight: 600 }}>
           Your Magical Fable
         </Typography>
-        <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
+        <Typography variant="body1" color="text.secondary" sx={{ mt: 2 }}>
           A unique story crafted just for you
         </Typography>
       </Box>
       
-      <Divider sx={{ my: 2 }} />
+      <Divider sx={{ my: 3 }} />
       
-      <Box sx={{ mb: 4 }}>
+      <Box sx={{ mb: 5 }}>
         <Typography 
           variant="body1" 
           paragraph 
           sx={{ 
             whiteSpace: 'pre-line',
-            lineHeight: 1.8,
-            fontSize: '1.05rem',
+            lineHeight: 2,
+            fontSize: '1.25rem',
             fontFamily: '"Georgia", serif',
             textAlign: 'justify',
-            mb: 3 
+            mb: 4,
+            p: 2
           }}
         >
           {fableText}
@@ -57,19 +58,19 @@ const FableResult: React.FC<FableResultProps> = ({ fableText, images }) => {
 
       {images.length > 0 && (
         <>
-          <Box sx={{ textAlign: 'center', mb: 3 }}>
-            <Typography variant="h6" color="primary">
+          <Box sx={{ textAlign: 'center', mb: 4 }}>
+            <Typography variant="h5" color="primary" sx={{ fontWeight: 600 }}>
               Story Illustrations
             </Typography>
           </Box>
           
-          <Grid2 container spacing={3}>
+          <Grid container spacing={4}>
             {images.map((imgUrl, idx) => (
-              <Grid2 size={{ xs: 12, md: 6 }} key={idx}>
+              <Grid item xs={12} sm={6} key={idx}>
                 <Card elevation={0} sx={{ height: '100%' }}>
                   <CardMedia
                     component="img"
-                    height="240"
+                    height="320"
                     image={imgUrl}
                     alt={`Fable illustration ${idx + 1}`}
                     sx={{ objectFit: 'cover' }}
@@ -80,9 +81,9 @@ const FableResult: React.FC<FableResultProps> = ({ fableText, images }) => {
                     </Typography>
                   </CardContent>
                 </Card>
-              </Grid2>
+              </Grid>
             ))}
-          </Grid2>
+          </Grid>
         </>
       )}
     </Paper>

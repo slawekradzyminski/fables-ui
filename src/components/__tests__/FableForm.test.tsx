@@ -18,15 +18,15 @@ describe('FableForm', () => {
     render(<FableForm onFableGenerated={mockOnFableGenerated} onError={mockOnError} />);
     
     // when
-    fireEvent.change(screen.getByLabelText(/World Description/i), { target: { value: 'A magical forest' } });
-    fireEvent.change(screen.getByLabelText(/Main Character/i), { target: { value: 'Wise Owl' } });
+    fireEvent.change(screen.getByLabelText(/Describe the magical world/i), { target: { value: 'A magical forest' } });
+    fireEvent.change(screen.getByLabelText(/Who is your main character/i), { target: { value: 'Wise Owl' } });
     
     // Use a more specific selector for the Age input field
     const ageInput = screen.getByRole('spinbutton', { name: /Target Age/i });
     fireEvent.change(ageInput, { target: { value: '7' } });
     
     // Submit the form
-    fireEvent.click(screen.getByRole('button', { name: /Generate Fable/i }));
+    fireEvent.click(screen.getByRole('button', { name: /Generate Magical Story/i }));
     
     // then
     expect(screen.getByText('Creating your story...')).toBeInTheDocument();
@@ -54,10 +54,10 @@ describe('FableForm', () => {
     render(<FableForm onFableGenerated={mockOnFableGenerated} onError={mockOnError} />);
     
     // when
-    fireEvent.change(screen.getByLabelText(/World Description/i), { target: { value: 'A magical forest' } });
-    fireEvent.change(screen.getByLabelText(/Main Character/i), { target: { value: 'Wise Owl' } });
+    fireEvent.change(screen.getByLabelText(/Describe the magical world/i), { target: { value: 'A magical forest' } });
+    fireEvent.change(screen.getByLabelText(/Who is your main character/i), { target: { value: 'Wise Owl' } });
     
-    fireEvent.click(screen.getByRole('button', { name: /Generate Fable/i }));
+    fireEvent.click(screen.getByRole('button', { name: /Generate Magical Story/i }));
     
     // then
     await waitFor(() => {

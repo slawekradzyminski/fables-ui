@@ -18,6 +18,10 @@ const theme = createTheme({
       default: '#F3F4F6',
       paper: '#FFFFFF',
     },
+    text: {
+      primary: '#1F2937',
+      secondary: '#4B5563',
+    },
   },
   typography: {
     fontFamily: '"Inter", "Segoe UI", "Roboto", sans-serif',
@@ -119,10 +123,8 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
           }}
         >
           <Container 
-            maxWidth={false}
+            maxWidth="lg"
             sx={{
-              maxWidth: 'lg',
-              mx: 'auto',
               width: '100%',
             }}
           >
@@ -153,23 +155,17 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
           component="main"
           sx={{
             flex: 1,
-            display: 'flex',
             width: '100%',
           }}
         >
           <Container 
-            maxWidth={false}
+            maxWidth="lg"
             sx={{
-              maxWidth: 'lg',
-              mx: 'auto',
               width: '100%',
               py: { xs: 3, sm: 4 },
               px: { xs: 2, sm: 3 },
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center',
-              justifyContent: 'center',
             }}
+            data-testid="parent-container"
           >
             <Box
               sx={{
@@ -177,6 +173,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                 maxWidth: 600,
                 mx: 'auto',
               }}
+              data-testid="centered-container"
             >
               {children}
             </Box>
@@ -194,10 +191,8 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
           }}
         >
           <Container 
-            maxWidth={false}
+            maxWidth="lg"
             sx={{
-              maxWidth: 'lg',
-              mx: 'auto',
               width: '100%',
             }}
           >
