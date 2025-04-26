@@ -1,6 +1,7 @@
 export interface Fable {
   text: string;
-  images: string[];
+  moral: string;
+  illustrations: { prompt: string; image: string }[];
 }
 
 export interface FableGenerationOptions {

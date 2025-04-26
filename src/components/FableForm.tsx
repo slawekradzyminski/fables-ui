@@ -13,23 +13,25 @@ import {
   Select,
   MenuItem,
 } from '@mui/material';
-import { generateFable } from '../api/fablesApi';
+import { generateFable, FableResponse } from '../api/fablesApi';
 
 interface FableFormProps {
-  onFableGenerated: (fableText: string, images: string[]) => void;
+  onFableGenerated: (fable: FableResponse) => void;
   onError: (errorMessage: string) => void;
+  onLoadingChange: (flag: boolean) => void;
 }
 
-const FableForm: React.FC<FableFormProps> = ({ onFableGenerated, onError }) => {
+const FableForm: React.FC<FableFormProps> = ({ onFableGenerated, onError, onLoadingChange }) => {
   const [worldDescription, setWorldDescription] = useState('');
   const [mainCharacter, setMainCharacter] = useState('');
   const [age, setAge] = useState(7);
   const [numImages, setNumImages] = useState(2);
-  const [loading, setLoading] = useState(false);
+  const [isDisabled, setIsDisabled] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setLoading(true);
+    onLoadingChange(true);
+    setIsDisabled(true);
 
     try {
       const response = await generateFable({
@@ -38,11 +40,12 @@ const FableForm: React.FC<FableFormProps> = ({ onFableGenerated, onError }) => {
         age,
         num_images: numImages,
       });
-      onFableGenerated(response.fable_text, response.images);
+      onFableGenerated(response);
     } catch (error) {
       onError(error instanceof Error ? error.message : 'Error generating fable.');
     } finally {
-      setLoading(false);
+      onLoadingChange(false);
+      setIsDisabled(false);
     }
   };
 
@@ -162,7 +165,7 @@ const FableForm: React.FC<FableFormProps> = ({ onFableGenerated, onError }) => {
           <Button
             type="submit"
             variant="contained"
-            disabled={loading}
+            disabled={isDisabled}
             size="large"
             sx={{
               height: 48,
@@ -172,7 +175,7 @@ const FableForm: React.FC<FableFormProps> = ({ onFableGenerated, onError }) => {
               mt: 2,
             }}
           >
-            {loading ? 'Creating your story...' : 'Generate Magical Story'}
+            {isDisabled ? 'Creating your story...' : 'Generate Magical Story'}
           </Button>
         </Stack>
       </Box>

@@ -1,17 +1,23 @@
 import { useState } from 'react';
 import { Alert, Box } from '@mui/material';
+import { FableResponse, IllustrationResponse } from '../api/fablesApi';
 import FableForm from '../components/FableForm';
 import FableResult from '../components/FableResult';
+import LoadingOverlay from '../components/LoadingOverlay';
 
 const HomePage: React.FC = () => {
-  const [fableText, setFableText] = useState('');
-  const [images, setImages] = useState<string[]>([]);
+  const [fable, setFable] = useState('');
+  const [moral, setMoral] = useState('');
+  const [illustrations, setIllustrations] = useState<IllustrationResponse[]>([]);
   const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
 
-  const handleFableGenerated = (text: string, imgUrls: string[]) => {
-    setFableText(text);
-    setImages(imgUrls);
+  const handleFableGenerated = (response: FableResponse) => {
+    setFable(response.fable);
+    setMoral(response.moral);
+    setIllustrations(response.illustrations);
     setError('');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   const handleError = (errorMessage: string) => {
@@ -20,6 +26,7 @@ const HomePage: React.FC = () => {
 
   return (
     <div>
+      <LoadingOverlay loading={loading} />
       {error && (
         <Box mb={3}>
           <Alert severity="error" onClose={() => setError('')}>{error}</Alert>
@@ -29,9 +36,14 @@ const HomePage: React.FC = () => {
         <FableForm
           onFableGenerated={handleFableGenerated}
           onError={handleError}
+          onLoadingChange={setLoading}
         />
       </Box>
-      <FableResult fableText={fableText} images={images} />
+      <FableResult 
+        fableText={fable} 
+        moral={moral} 
+        illustrations={illustrations} 
+      />
     </div>
   );
 };

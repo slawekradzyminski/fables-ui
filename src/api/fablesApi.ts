@@ -5,10 +5,17 @@ export interface FableRequest {
   num_images?: number;
 }
 
+// New types
+export interface IllustrationResponse {
+  prompt: string;
+  image: string;
+}
+
+// Updated FableResponse
 export interface FableResponse {
-  fable_text: string;
-  images: string[];
-  prompts: string[];
+  fable: string; // replaces fable_text
+  moral: string; // new
+  illustrations: IllustrationResponse[]; // replaces images/prompts
 }
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000';
@@ -27,18 +34,25 @@ export async function generateFable(requestData: FableRequest): Promise<FableRes
 
   if (!response.ok) {
     const error = await response.json();
-    throw new Error(error.detail || 'Failed to generate fable');
+    // Use optional chaining and nullish coalescing for safer error message access
+    throw new Error(error?.detail ?? 'Failed to generate fable');
   }
 
-  return response.json();
+  // Cast the response promise
+  return response.json() as Promise<FableResponse>;
 }
 
 /**
  * Simple health check call
  */
 export async function checkHealth(): Promise<boolean> {
-  const response = await fetch(`${API_BASE_URL}/health`);
-  if (!response.ok) return false;
-  const data = await response.json();
-  return data.openai_key_configured;
+  try { // Added try-catch for robustness
+    const response = await fetch(`${API_BASE_URL}/health`);
+    if (!response.ok) return false;
+    const { status } = await response.json(); // Destructure status
+    return status === 'healthy'; // Check status value
+  } catch (error) {
+    console.error("Health check failed:", error);
+    return false;
+  }
 } 

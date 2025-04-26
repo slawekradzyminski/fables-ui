@@ -1,11 +1,13 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { generateFable, checkHealth } from '../fablesApi';
+import { generateFable, checkHealth, FableResponse, IllustrationResponse } from '../fablesApi';
 
 describe('fablesApi', () => {
+  // Using any for fetchMock type to avoid persistent TS/linter issues
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   let fetchMock: any;
 
   beforeEach(() => {
-    fetchMock = vi.spyOn(global, 'fetch');
+    fetchMock = vi.spyOn(window, 'fetch');
   });
 
   afterEach(() => {
@@ -15,10 +17,14 @@ describe('fablesApi', () => {
   describe('generateFable', () => {
     it('returns fable data on successful API call', async () => {
       // given
-      const mockResponse = {
-        fable_text: 'Once upon a time...',
-        images: ['image1.jpg', 'image2.jpg'],
-        prompts: ['prompt1', 'prompt2']
+      const mockIllustrations: IllustrationResponse[] = [
+        { prompt: 'prompt1', image: 'base64_image_1' },
+        { prompt: 'prompt2', image: 'base64_image_2' }
+      ];
+      const mockResponse: FableResponse = {
+        fable: 'Once upon a time...',
+        moral: 'The moral is...',
+        illustrations: mockIllustrations
       };
       
       fetchMock.mockResolvedValueOnce({
@@ -68,14 +74,39 @@ describe('fablesApi', () => {
       // when/then
       await expect(generateFable(requestData)).rejects.toThrow(errorDetail);
     });
+
+    it('throws generic error when API call fails without detail', async () => {
+      // given
+      fetchMock.mockResolvedValueOnce({
+        ok: false,
+        json: () => Promise.resolve({ message: 'Some other error' })
+      });
+      const requestData = { world_description: 'a', main_character: 'b', age: 1 };
+      
+      // when/then
+      await expect(generateFable(requestData)).rejects.toThrow('Failed to generate fable');
+    });
+
+    it('throws parsing error message when API call fails and json parsing fails', async () => {
+      // given
+      const parsingErrorMessage = 'Parsing failed';
+      fetchMock.mockResolvedValueOnce({
+        ok: false,
+        json: () => Promise.reject(new Error(parsingErrorMessage)) 
+      });
+      const requestData = { world_description: 'a', main_character: 'b', age: 1 };
+      
+      // when/then
+      await expect(generateFable(requestData)).rejects.toThrow(parsingErrorMessage);
+    });
   });
   
   describe('checkHealth', () => {
-    it('returns true when API is healthy and OpenAI key is configured', async () => {
+    it('returns true when API status is healthy', async () => {
       // given
       fetchMock.mockResolvedValueOnce({
         ok: true,
-        json: () => Promise.resolve({ openai_key_configured: true })
+        json: () => Promise.resolve({ status: 'healthy' })
       });
       
       // when
@@ -86,7 +117,7 @@ describe('fablesApi', () => {
       expect(result).toBe(true);
     });
     
-    it('returns false when API health check fails', async () => {
+    it('returns false when API health check fails (response not ok)', async () => {
       // given
       fetchMock.mockResolvedValueOnce({
         ok: false
@@ -99,12 +130,23 @@ describe('fablesApi', () => {
       expect(result).toBe(false);
     });
     
-    it('returns false when OpenAI key is not configured', async () => {
+    it('returns false when API status is not healthy', async () => {
       // given
       fetchMock.mockResolvedValueOnce({
         ok: true,
-        json: () => Promise.resolve({ openai_key_configured: false })
+        json: () => Promise.resolve({ status: 'unhealthy' })
       });
+      
+      // when
+      const result = await checkHealth();
+      
+      // then
+      expect(result).toBe(false);
+    });
+
+    it('returns false when API call throws an error', async () => {
+      // given
+      fetchMock.mockRejectedValueOnce(new Error('Network error'));
       
       // when
       const result = await checkHealth();
