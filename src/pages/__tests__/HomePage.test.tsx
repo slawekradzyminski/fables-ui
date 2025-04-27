@@ -1,8 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import HomePage from '../HomePage';
-import * as api from '../../api/fablesApi';
-// Import necessary types
 import { FableResponse, IllustrationResponse } from '../../api/fablesApi';
 
 // Mock the LoadingOverlay to check its presence
@@ -12,10 +10,24 @@ vi.mock('../../components/LoadingOverlay', () => ({
   )
 }));
 
+// Define types for mock component props
+interface MockFableFormProps {
+  onFableGenerated: (response: FableResponse) => void;
+  onError: (message: string) => void;
+  onLoadingChange: (loading: boolean) => void;
+}
+
+interface MockFableResultProps {
+  title: string;
+  fableText: string;
+  moral: string;
+  illustrations: IllustrationResponse[];
+}
+
 // Mock FableForm to simulate interaction and pass new props
 vi.mock('../../components/FableForm', () => ({
-  // Pass onLoadingChange prop
-  default: ({ onFableGenerated, onError, onLoadingChange }: any) => {
+  // Use defined type for props
+  default: ({ onFableGenerated, onError, onLoadingChange }: MockFableFormProps) => {
     // Define mock response data matching the new structure
     const mockIllustrations: IllustrationResponse[] = [
       { prompt: 'p1', image: 'i1' },
@@ -62,8 +74,8 @@ vi.mock('../../components/FableForm', () => ({
 
 // Mock FableResult to accept new props including title
 vi.mock('../../components/FableResult', () => ({
-  // Accept title prop
-  default: ({ title, fableText, moral, illustrations }: any) => (
+  // Use defined type for props
+  default: ({ title, fableText, moral, illustrations }: MockFableResultProps) => (
     <div data-testid="mock-fable-result">
       {/* Display title if present */}
       {title && <div data-testid="title-text">{title}</div>}
@@ -78,8 +90,8 @@ vi.mock('../../components/FableResult', () => ({
 
 describe('HomePage', () => {
   beforeEach(() => {
-    // Mock window.scrollTo as it's not implemented in jsdom
-    global.scrollTo = vi.fn(); 
+    // Use window.scrollTo
+    window.scrollTo = vi.fn(); 
   });
 
   it('renders FableForm and empty FableResult initially', () => {
@@ -113,8 +125,8 @@ describe('HomePage', () => {
       expect(screen.getByTestId('fable-text').textContent).toBe('Generated fable text');
       expect(screen.getByTestId('moral-text').textContent).toBe('Generated moral');
       expect(screen.getByTestId('illustrations-count').textContent).toBe('2'); // Based on mock data
-      // Verify scrollTo was called
-      expect(global.scrollTo).toHaveBeenCalledWith({ top: 0, behavior: 'smooth' });
+      // Verify window.scrollTo was called
+      expect(window.scrollTo).toHaveBeenCalledWith({ top: 0, behavior: 'smooth' });
     });
 
     // Check loading overlay is removed after completion
@@ -135,8 +147,8 @@ describe('HomePage', () => {
     await waitFor(() => {
       // Check error message is displayed
       expect(screen.getByText('Error message')).toBeInTheDocument();
-      // Ensure scrollTo was NOT called on error
-      expect(global.scrollTo).not.toHaveBeenCalled();
+      // Ensure window.scrollTo was NOT called on error
+      expect(window.scrollTo).not.toHaveBeenCalled();
     });
 
     // Check loading overlay is removed after completion
