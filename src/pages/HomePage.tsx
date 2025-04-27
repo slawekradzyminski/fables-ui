@@ -7,6 +7,7 @@ import LoadingOverlay from '../components/LoadingOverlay';
 
 const HomePage: React.FC = () => {
   const [fable, setFable] = useState('');
+  const [title, setTitle] = useState('');
   const [moral, setMoral] = useState('');
   const [illustrations, setIllustrations] = useState<IllustrationResponse[]>([]);
   const [error, setError] = useState('');
@@ -14,6 +15,7 @@ const HomePage: React.FC = () => {
 
   const handleFableGenerated = (response: FableResponse) => {
     setFable(response.fable);
+    setTitle(response.title);
     setMoral(response.moral);
     setIllustrations(response.illustrations);
     setError('');
@@ -40,6 +42,7 @@ const HomePage: React.FC = () => {
         />
       </Box>
       <FableResult 
+        title={title}
         fableText={fable} 
         moral={moral} 
         illustrations={illustrations} 

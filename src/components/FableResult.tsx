@@ -12,12 +12,13 @@ import { IllustrationResponse } from '../api/fablesApi';
 
 // Update props interface
 interface FableResultProps {
+  title: string;
   fableText: string;
   moral: string;
   illustrations: IllustrationResponse[];
 }
 
-const FableResult: React.FC<FableResultProps> = ({ fableText, moral, illustrations }) => {
+const FableResult: React.FC<FableResultProps> = ({ title, fableText, moral, illustrations }) => {
   if (!fableText) return null;
 
   // Generate interleaved content
@@ -35,7 +36,7 @@ const FableResult: React.FC<FableResultProps> = ({ fableText, moral, illustratio
     >
       <Box sx={{ textAlign: 'center', mb: { xs: 2, sm: 3 } }}>
         <Typography variant="h4" component="h2" color="primary" sx={{ fontWeight: 600 }}>
-          Your Magical Fable
+          {title}
         </Typography>
       </Box>
       

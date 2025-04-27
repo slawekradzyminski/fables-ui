@@ -1,4 +1,5 @@
 export interface Fable {
+  title: string;
   text: string;
   moral: string;
   illustrations: { prompt: string; image: string }[];

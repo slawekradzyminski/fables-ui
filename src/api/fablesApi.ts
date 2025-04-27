@@ -13,9 +13,10 @@ export interface IllustrationResponse {
 
 // Updated FableResponse
 export interface FableResponse {
-  fable: string; // replaces fable_text
-  moral: string; // new
-  illustrations: IllustrationResponse[]; // replaces images/prompts
+  title: string;
+  fable: string;
+  moral: string;
+  illustrations: IllustrationResponse[];
 }
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000';

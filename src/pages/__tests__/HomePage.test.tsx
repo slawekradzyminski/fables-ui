@@ -22,6 +22,7 @@ vi.mock('../../components/FableForm', () => ({
       { prompt: 'p2', image: 'i2' }
     ];
     const mockSuccessResponse: FableResponse = {
+      title: 'Generated Title', 
       fable: 'Generated fable text',
       moral: 'Generated moral',
       illustrations: mockIllustrations
@@ -59,11 +60,13 @@ vi.mock('../../components/FableForm', () => ({
   }
 }));
 
-// Mock FableResult to accept new props
+// Mock FableResult to accept new props including title
 vi.mock('../../components/FableResult', () => ({
-  // Accept new props: fableText, moral, illustrations
-  default: ({ fableText, moral, illustrations }: any) => (
+  // Accept title prop
+  default: ({ title, fableText, moral, illustrations }: any) => (
     <div data-testid="mock-fable-result">
+      {/* Display title if present */}
+      {title && <div data-testid="title-text">{title}</div>}
       <div data-testid="fable-text">{fableText}</div>
       {/* Display moral if present */}
       {moral && <div data-testid="moral-text">{moral}</div>}
@@ -90,6 +93,7 @@ describe('HomePage', () => {
     expect(screen.queryByTestId('moral-text')).not.toBeInTheDocument(); // Moral not present initially
     expect(screen.getByTestId('illustrations-count').textContent).toBe('0');
     expect(screen.queryByTestId('loading-overlay')).not.toBeInTheDocument(); // Loading overlay not present
+    expect(screen.queryByTestId('title-text')).not.toBeInTheDocument(); // Title not present initially
   });
 
   it('shows loading overlay and updates FableResult when fable is generated', async () => {
@@ -104,7 +108,8 @@ describe('HomePage', () => {
 
     // Wait for async updates
     await waitFor(() => {
-      // Check FableResult updated with new data structure
+      // Check FableResult updated with title
+      expect(screen.getByTestId('title-text').textContent).toBe('Generated Title'); 
       expect(screen.getByTestId('fable-text').textContent).toBe('Generated fable text');
       expect(screen.getByTestId('moral-text').textContent).toBe('Generated moral');
       expect(screen.getByTestId('illustrations-count').textContent).toBe('2'); // Based on mock data

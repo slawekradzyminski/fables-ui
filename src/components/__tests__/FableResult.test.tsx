@@ -4,28 +4,36 @@ import FableResult from '../FableResult';
 import { IllustrationResponse } from '../../api/fablesApi';
 
 describe('FableResult', () => {
+  const defaultProps = {
+    title: 'Test Title',
+    fableText: 'Test Fable',
+    moral: 'Test Moral',
+    illustrations: [] as IllustrationResponse[],
+  };
+
   it('renders nothing when no fable text is provided', () => {
     // given
-    render(<FableResult fableText="" moral="" illustrations={[]} />);
+    render(<FableResult {...defaultProps} fableText="" />);
     
     // then
-    expect(screen.queryByText('Your Magical Fable')).not.toBeInTheDocument();
+    expect(screen.queryByText(defaultProps.title)).not.toBeInTheDocument();
   });
 
-  it('renders fable text, interleaved images, and moral when provided', () => {
+  it('renders title, fable text, interleaved images, and moral when provided', () => {
     // given
     const fableText = 'Paragraph one.\n\nParagraph two.';
     const moral = 'The moral is to be kind.';
+    const title = 'The Kind Fox';
     const illustrations: IllustrationResponse[] = [
       { prompt: 'A kind fox', image: 'base64_fox_image' },
       { prompt: 'A sharing bear', image: 'base64_bear_image' },
     ];
     
     // when
-    render(<FableResult fableText={fableText} moral={moral} illustrations={illustrations} />);
+    render(<FableResult title={title} fableText={fableText} moral={moral} illustrations={illustrations} />);
     
     // then
-    expect(screen.getByText('Your Magical Fable')).toBeInTheDocument();
+    expect(screen.getByText(title)).toBeInTheDocument();
     expect(screen.getByText('Moral of the Story')).toBeInTheDocument();
     expect(screen.getByText(moral)).toBeInTheDocument();
 
@@ -46,15 +54,16 @@ describe('FableResult', () => {
 
   it('renders correctly when no illustrations are provided', () => {
     // given
+    const title = 'No Pictures Story';
     const fableText = 'Just a story, no pictures.';
     const moral = 'Pictures are not required.';
     const illustrations: IllustrationResponse[] = [];
     
     // when
-    render(<FableResult fableText={fableText} moral={moral} illustrations={illustrations} />);
+    render(<FableResult title={title} fableText={fableText} moral={moral} illustrations={illustrations} />);
     
     // then
-    expect(screen.getByText('Your Magical Fable')).toBeInTheDocument();
+    expect(screen.getByText(title)).toBeInTheDocument();
     expect(screen.getByText(fableText)).toBeInTheDocument();
     expect(screen.getByText('Moral of the Story')).toBeInTheDocument();
     expect(screen.getByText(moral)).toBeInTheDocument();
@@ -63,6 +72,7 @@ describe('FableResult', () => {
 
   it('renders correctly when no moral is provided', () => {
     // given
+    const title = 'Moral-less Tale';
     const fableText = 'A story without a moral.';
     const moral = '';
     const illustrations: IllustrationResponse[] = [
@@ -70,10 +80,10 @@ describe('FableResult', () => {
     ];
     
     // when
-    render(<FableResult fableText={fableText} moral={moral} illustrations={illustrations} />);
+    render(<FableResult title={title} fableText={fableText} moral={moral} illustrations={illustrations} />);
     
     // then
-    expect(screen.getByText('Your Magical Fable')).toBeInTheDocument();
+    expect(screen.getByText(title)).toBeInTheDocument();
     expect(screen.getByText(fableText)).toBeInTheDocument();
     expect(screen.queryByText('Moral of the Story')).not.toBeInTheDocument();
     expect(screen.getByAltText('A questioning cat')).toBeInTheDocument();

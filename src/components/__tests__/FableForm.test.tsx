@@ -17,8 +17,9 @@ describe('FableForm', () => {
       { prompt: 'prompt1', image: 'img1' },
       { prompt: 'prompt2', image: 'img2' }
     ];
-    // Define mock response with new structure
+    // Define mock response with new structure including title
     const mockFableResponse: FableResponse = {
+      title: 'Mock Title',
       fable: 'Mock fable text',
       moral: 'Mock moral',
       illustrations: mockIllustrations

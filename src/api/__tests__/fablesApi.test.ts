@@ -22,6 +22,7 @@ describe('fablesApi', () => {
         { prompt: 'prompt2', image: 'base64_image_2' }
       ];
       const mockResponse: FableResponse = {
+        title: 'Fable Title',
         fable: 'Once upon a time...',
         moral: 'The moral is...',
         illustrations: mockIllustrations
